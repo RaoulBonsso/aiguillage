@@ -1,26 +1,88 @@
 @import "tailwindcss";
 
+/**
+ * Design system d'Aiguillage.
+ *
+ * Un portail d'API est un outil de travail : on optimise la lisibilité d'un
+ * bloc de code à 2 h du matin, pas l'effet de manche. D'où un fond profond,
+ * une seule couleur d'accent (l'ambre des signaux ferroviaires) et une échelle
+ * typographique courte.
+ */
+
+@theme {
+  --color-rail-950: #080b11;
+  --color-rail-900: #0d1219;
+  --color-rail-850: #121822;
+  --color-rail-800: #1a2230;
+  --color-rail-700: #26314293;
+  --color-rail-600: #3b4a63;
+  --color-rail-400: #7c8ba5;
+  --color-rail-300: #a4b1c6;
+  --color-rail-100: #e4e9f2;
+
+  --color-signal-500: #f0a12a;
+  --color-signal-400: #f7b955;
+  --color-signal-200: #fbdca4;
+
+  --color-vert-500: #3fbf8f;
+  --color-rouge-500: #e5654b;
+  --color-violet-400: #a78bfa;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(60rem 40rem at 15% -10%, #16202f 0%, transparent 60%),
+    radial-gradient(50rem 30rem at 95% 0%, #1b1a2b 0%, transparent 55%),
+    var(--color-rail-950);
+  color: var(--color-rail-100);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+/* Le filet ambré qui sépare les sections : un rail, discrètement. */
+.rail-line {
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-signal-500) 20%,
+    var(--color-signal-500) 80%,
+    transparent
+  );
+  opacity: 0.35;
+  height: 1px;
+}
+
+/* Colonne de code : lisible, sélectionnable, jamais tronquée sans prévenir. */
+.bloc-code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+.bloc-code::-webkit-scrollbar {
+  height: 6px;
+}
+
+.bloc-code::-webkit-scrollbar-thumb {
+  background: var(--color-rail-600);
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
