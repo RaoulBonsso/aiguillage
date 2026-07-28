@@ -64,12 +64,23 @@ export class ApiKeyService {
     private readonly now: Clock = () => new Date(),
   ) {}
 
-  /** Émet une clé. Le secret retourné ici ne pourra plus jamais être relu. */
-  async issue({ name, quota }: { name: string; quota: number }): Promise<{
-    secret: string;
-    key: ApiKeyView;
-  }> {
-    const secret = PREFIXE + randomBytes(LONGUEUR_SECRET_OCTETS).toString("hex");
+  /**
+   * Émet une clé. Le secret retourné ici ne pourra plus jamais être relu.
+   *
+   * `secret` n'est fourni que pour semer la clé de démonstration au démarrage :
+   * un bac à sable public a besoin d'une clé connue. Toute autre clé tire son
+   * secret du générateur cryptographique.
+   */
+  async issue({
+    name,
+    quota,
+    secret: impose,
+  }: {
+    name: string;
+    quota: number;
+    secret?: string;
+  }): Promise<{ secret: string; key: ApiKeyView }> {
+    const secret = impose ?? PREFIXE + randomBytes(LONGUEUR_SECRET_OCTETS).toString("hex");
     const instant = this.now();
     const record: ApiKeyRecord = {
       id: randomUUID(),
