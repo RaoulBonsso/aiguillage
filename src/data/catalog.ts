@@ -198,14 +198,7 @@ function tarifs(base_cents: number, departure: Date, remplissage: number): Fare[
   const eco = base_cents + (pointe ? Math.round(base_cents * 0.25) : 0) + tension;
   const arrondi = (montant: number) => Math.round(montant / 100) * 100;
 
-  return [
-    {
-      code: "eco",
-      price: { amount_cents: arrondi(eco), currency: "EUR" },
-      exchangeable: false,
-      refundable: false,
-      conditions: "Billet non échangeable et non remboursable, valable sur ce train uniquement.",
-    },
+  const grille: Fare[] = [
     {
       code: "semi_flex",
       price: { amount_cents: arrondi(eco * 1.35), currency: "EUR" },
@@ -222,6 +215,21 @@ function tarifs(base_cents: number, departure: Date, remplissage: number): Fare[
       conditions: "Échange et remboursement sans frais jusqu'à l'heure de départ.",
     },
   ];
+
+  // Le tarif le moins cher disparaît quand le train se remplit : c'est le
+  // comportement réel d'une grille ferroviaire, et c'est ce qui rend le filtre
+  // `fare=eco` utile plutôt que décoratif.
+  if (remplissage <= 0.7) {
+    grille.unshift({
+      code: "eco",
+      price: { amount_cents: arrondi(eco), currency: "EUR" },
+      exchangeable: false,
+      refundable: false,
+      conditions: "Billet non échangeable et non remboursable, valable sur ce train uniquement.",
+    });
+  }
+
+  return grille;
 }
 
 /** Disponibilité tirée de l'empreinte de l'offre : stable, mais variée. */
