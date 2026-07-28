@@ -93,14 +93,28 @@ describe("GET /offers", () => {
     expect(champs).toEqual(expect.arrayContaining(["origin", "destination", "date"]));
   });
 
-  it("rejette une date mal formée", async () => {
+  it("rejette une date mal formée, avec une seule erreur pour le champ", async () => {
     const reponse = await getOffers(
       authentifiee("/offers?origin=FRPAR&destination=FRNTE&date=04-08-2026"),
     );
-    const body = (await corps(reponse)) as { errors?: Array<{ field: string }> };
+    const body = (await corps(reponse)) as { errors?: Array<{ field: string; message: string }> };
 
     expect(reponse.status).toBe(400);
-    expect(body.errors?.map((erreur) => erreur.field)).toContain("date");
+    const surLaDate = body.errors?.filter((erreur) => erreur.field === "date") ?? [];
+    // Une faute de frappe est une faute, pas deux : deux messages sur le même
+    // champ envoient l'intégrateur chercher un problème qui n'existe pas.
+    expect(surLaDate).toHaveLength(1);
+    expect(surLaDate[0].message).toContain("AAAA-MM-JJ");
+  });
+
+  it("rejette une date bien formée mais absente du calendrier", async () => {
+    const reponse = await getOffers(
+      authentifiee("/offers?origin=FRPAR&destination=FRNTE&date=2026-02-31"),
+    );
+    const body = (await corps(reponse)) as { errors?: Array<{ field: string; message: string }> };
+
+    expect(reponse.status).toBe(400);
+    expect(body.errors?.find((erreur) => erreur.field === "date")?.message).toContain("n'existe pas");
   });
 
   it("rejette un code gare qui n'a pas la forme attendue", async () => {

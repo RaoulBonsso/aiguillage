@@ -104,10 +104,31 @@ const codeGare = z
   .string()
   .regex(/^[A-Z]{2}[A-Z0-9]{3}$/, "Code gare attendu : 2 lettres de pays puis 3 caractères (ex. FRPAR).");
 
-const jourCivil = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Format attendu AAAA-MM-JJ.")
-  .refine((valeur) => !Number.isNaN(Date.parse(`${valeur}T00:00:00Z`)), "Date inexistante.");
+/**
+ * Une date de calendrier.
+ *
+ * Les deux contrôles sont enchaînés à la main plutôt qu'empilés : signaler
+ * « format attendu » *et* « date inexistante » pour une seule faute de frappe
+ * donne à l'intégrateur l'impression d'avoir commis deux erreurs, et l'envoie
+ * chercher la mauvaise.
+ */
+const jourCivil = z.string().superRefine((valeur, ctx) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(valeur)) {
+    ctx.addIssue({ code: "custom", message: "Format attendu AAAA-MM-JJ." });
+    return;
+  }
+  // On vérifie par aller-retour, et non avec `Date.parse` : JavaScript accepte
+  // le 31 février et le reporte silencieusement au 3 mars. Une API qui répond
+  // sur une date que le client n'a pas demandée est pire qu'une API qui refuse.
+  const [annee, mois, jour] = valeur.split("-").map(Number);
+  const date = new Date(Date.UTC(annee, mois - 1, jour));
+  const identique =
+    date.getUTCFullYear() === annee && date.getUTCMonth() === mois - 1 && date.getUTCDate() === jour;
+
+  if (!identique) {
+    ctx.addIssue({ code: "custom", message: "Cette date n'existe pas au calendrier." });
+  }
+});
 
 const page = z.coerce.number().int("Nombre entier attendu.").min(1, "La page commence à 1.").default(1);
 
