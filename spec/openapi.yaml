@@ -1,0 +1,432 @@
+openapi: 3.1.0
+
+info:
+  title: Aiguillage — API de distribution ferroviaire
+  version: 1.0.0
+  summary: L'offre ferroviaire (trajets, tarifs, disponibilités) exposée aux canaux de vente.
+  description: |
+    Aiguillage expose l'offre commerciale d'un transporteur ferroviaire aux **canaux de
+    distribution** : sites grand public, applications mobiles, agences de voyage, revendeurs.
+
+    Le contrat ci-dessous est la **source de vérité** du produit. Il est écrit avant le code, et
+    l'implémentation est vérifiée contre lui par une suite de tests de contrat : toute réponse
+    servie en production est validée par les schémas de ce document.
+
+    ## Authentification
+    Chaque appel porte une clé d'API dans l'en-tête `X-API-Key`. Les clés sont émises depuis la
+    console d'administration, portent un quota mensuel et peuvent être révoquées à chaud.
+
+    ## Quotas
+    Chaque réponse porte les en-têtes `RateLimit-Limit`, `RateLimit-Remaining` et `RateLimit-Reset`.
+    Quota dépassé : `429` avec le délai avant réarmement.
+
+    ## Erreurs
+    Les erreurs suivent la RFC 9457 (`application/problem+json`) : un `type` stable et
+    documenté, un `title` lisible, un `detail` contextuel. Les intégrateurs branchent leur
+    gestion d'erreur sur `type`, jamais sur le texte.
+  contact:
+    name: Équipe API — Aiguillage
+    url: https://github.com/joyboy/aiguillage
+  license:
+    name: MIT
+
+servers:
+  - url: /api/v1
+    description: Cette instance
+
+tags:
+  - name: Offres
+    description: Recherche et consultation des offres de trajet.
+  - name: Référentiel
+    description: Les gares desservies, socle commun à toutes les recherches.
+  - name: Compte
+    description: L'état de la clé d'API appelante.
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /stations:
+    get:
+      operationId: listStations
+      tags: [Référentiel]
+      summary: Lister les gares desservies
+      description: |
+        Le référentiel des gares. Un canal de vente l'appelle une fois pour alimenter son
+        autocomplétion, puis utilise les codes retournés dans ses recherches d'offres.
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: Filtre plein texte sur le nom de la gare ou la ville.
+          schema: { type: string, minLength: 1, maxLength: 64 }
+          example: paris
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: La page de gares demandée.
+          headers:
+            RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimit" }
+            RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemaining" }
+            RateLimit-Reset: { $ref: "#/components/headers/RateLimitReset" }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Station" }
+                  meta: { $ref: "#/components/schemas/PageMeta" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /offers:
+    get:
+      operationId: searchOffers
+      tags: [Offres]
+      summary: Rechercher des offres de trajet
+      description: |
+        Le point d'entrée principal de la distribution : à partir d'un couple origine/destination
+        et d'une date, renvoie les trajets vendables avec leurs tarifs et leur disponibilité.
+
+        Les offres sont triées par heure de départ. Une offre `sold_out` reste retournée : le canal
+        de vente doit pouvoir l'afficher grisée plutôt que de faire disparaître un train.
+      parameters:
+        - name: origin
+          in: query
+          required: true
+          description: Code de la gare de départ.
+          schema: { $ref: "#/components/schemas/StationCode" }
+          example: FRPAR
+        - name: destination
+          in: query
+          required: true
+          description: Code de la gare d'arrivée.
+          schema: { $ref: "#/components/schemas/StationCode" }
+          example: FRNTE
+        - name: date
+          in: query
+          required: true
+          description: Date de départ souhaitée (jour civil, fuseau de la gare d'origine).
+          schema: { type: string, format: date }
+          example: "2026-08-04"
+        - name: passengers
+          in: query
+          required: false
+          description: Nombre de voyageurs ; conditionne la disponibilité retournée.
+          schema: { type: integer, minimum: 1, maximum: 9, default: 1 }
+        - name: fare
+          in: query
+          required: false
+          description: Ne garder que les offres proposant ce tarif.
+          schema: { $ref: "#/components/schemas/FareCode" }
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Les offres correspondant à la recherche.
+          headers:
+            RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimit" }
+            RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemaining" }
+            RateLimit-Reset: { $ref: "#/components/headers/RateLimitReset" }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Offer" }
+                  meta: { $ref: "#/components/schemas/PageMeta" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /offers/{offerId}:
+    get:
+      operationId: getOffer
+      tags: [Offres]
+      summary: Consulter une offre
+      description: |
+        Le détail d'une offre, tel qu'affiché sur la page de réservation : composition du trajet
+        segment par segment, grille tarifaire complète et conditions d'échange/remboursement.
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema: { $ref: "#/components/schemas/OfferId" }
+          example: off_2026_08_04_par_nte_0712
+      responses:
+        "200":
+          description: L'offre demandée.
+          headers:
+            RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimit" }
+            RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemaining" }
+            RateLimit-Reset: { $ref: "#/components/headers/RateLimitReset" }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: "#/components/schemas/Offer" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /me:
+    get:
+      operationId: getCurrentKey
+      tags: [Compte]
+      summary: Connaître l'état de sa clé
+      description: |
+        Permet à un intégrateur de vérifier sa clé et de suivre sa consommation sans attendre
+        un `429`. Ne consomme pas de quota : superviser son usage ne doit pas coûter d'usage.
+      responses:
+        "200":
+          description: L'identité et le quota de la clé appelante.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: "#/components/schemas/ApiKeyStatus" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Clé émise depuis la console d'administration. Préfixe `agl_`.
+
+  parameters:
+    Page:
+      name: page
+      in: query
+      required: false
+      description: Numéro de page, à partir de 1.
+      schema: { type: integer, minimum: 1, default: 1 }
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: Taille de page.
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+
+  headers:
+    RateLimitLimit:
+      description: Quota total de la clé sur la fenêtre courante.
+      schema: { type: integer }
+    RateLimitRemaining:
+      description: Appels restants sur la fenêtre courante.
+      schema: { type: integer }
+    RateLimitReset:
+      description: Secondes avant réarmement du quota.
+      schema: { type: integer }
+
+  schemas:
+    StationCode:
+      type: string
+      description: Code gare à 5 caractères, préfixé du pays (ISO 3166-1 alpha-2).
+      pattern: "^[A-Z]{2}[A-Z0-9]{3}$"
+      examples: [FRPAR, FRNTE]
+
+    OfferId:
+      type: string
+      pattern: "^off_[a-z0-9_]+$"
+      examples: [off_2026_08_04_par_nte_0712]
+
+    FareCode:
+      type: string
+      description: |
+        Niveau tarifaire.
+        * `eco` — le moins cher, ni échangeable ni remboursable.
+        * `semi_flex` — échangeable avec retenue, remboursable avant départ.
+        * `flex` — échangeable et remboursable sans frais.
+      enum: [eco, semi_flex, flex]
+
+    AvailabilityStatus:
+      type: string
+      enum: [available, limited, sold_out]
+
+    Station:
+      type: object
+      required: [code, name, city, country]
+      properties:
+        code: { $ref: "#/components/schemas/StationCode" }
+        name: { type: string, examples: ["Paris Montparnasse"] }
+        city: { type: string, examples: [Paris] }
+        country: { type: string, pattern: "^[A-Z]{2}$", examples: [FR] }
+      additionalProperties: false
+
+    Money:
+      type: object
+      required: [amount_cents, currency]
+      description: Un montant en plus petite unité monétaire — jamais un flottant.
+      properties:
+        amount_cents: { type: integer, minimum: 0, examples: [4900] }
+        currency: { type: string, pattern: "^[A-Z]{3}$", examples: [EUR] }
+      additionalProperties: false
+
+    Fare:
+      type: object
+      required: [code, price, exchangeable, refundable, conditions]
+      properties:
+        code: { $ref: "#/components/schemas/FareCode" }
+        price: { $ref: "#/components/schemas/Money" }
+        exchangeable: { type: boolean }
+        refundable: { type: boolean }
+        conditions:
+          type: string
+          description: Conditions lisibles par un voyageur, affichables telles quelles.
+          examples: ["Échange avec 15 € de retenue jusqu'à 30 min avant le départ."]
+      additionalProperties: false
+
+    Segment:
+      type: object
+      description: Un tronçon assuré par un train donné. Plusieurs segments = correspondance.
+      required: [train_number, carrier, origin, destination, departure, arrival]
+      properties:
+        train_number: { type: string, examples: ["8807"] }
+        carrier: { type: string, examples: ["Compagnie Atlantique"] }
+        origin: { $ref: "#/components/schemas/StationCode" }
+        destination: { $ref: "#/components/schemas/StationCode" }
+        departure: { type: string, format: date-time }
+        arrival: { type: string, format: date-time }
+      additionalProperties: false
+
+    Availability:
+      type: object
+      required: [status, seats_remaining]
+      properties:
+        status: { $ref: "#/components/schemas/AvailabilityStatus" }
+        seats_remaining: { type: integer, minimum: 0 }
+      additionalProperties: false
+
+    Offer:
+      type: object
+      required:
+        [id, origin, destination, departure, arrival, duration_minutes, segments, fares, availability, updated_at]
+      properties:
+        id: { $ref: "#/components/schemas/OfferId" }
+        origin: { $ref: "#/components/schemas/StationCode" }
+        destination: { $ref: "#/components/schemas/StationCode" }
+        departure: { type: string, format: date-time }
+        arrival: { type: string, format: date-time }
+        duration_minutes: { type: integer, minimum: 1 }
+        segments:
+          type: array
+          minItems: 1
+          items: { $ref: "#/components/schemas/Segment" }
+        fares:
+          type: array
+          minItems: 1
+          items: { $ref: "#/components/schemas/Fare" }
+        availability: { $ref: "#/components/schemas/Availability" }
+        updated_at:
+          type: string
+          format: date-time
+          description: Dernière mise à jour de l'offre côté éditeur. Sert au cache des canaux.
+      additionalProperties: false
+
+    ApiKeyStatus:
+      type: object
+      required: [name, prefix, quota, used, remaining, reset_at]
+      properties:
+        name: { type: string, examples: ["Canal web grand public"] }
+        prefix: { type: string, examples: [agl_live_7f3a] }
+        quota: { type: integer }
+        used: { type: integer }
+        remaining: { type: integer }
+        reset_at: { type: string, format: date-time }
+      additionalProperties: false
+
+    PageMeta:
+      type: object
+      required: [page, limit, total, total_pages]
+      properties:
+        page: { type: integer, minimum: 1 }
+        limit: { type: integer, minimum: 1 }
+        total: { type: integer, minimum: 0 }
+        total_pages: { type: integer, minimum: 0 }
+      additionalProperties: false
+
+    Problem:
+      type: object
+      description: Erreur au format RFC 9457.
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          description: Identifiant stable de la catégorie d'erreur. C'est sur lui qu'on branche le code appelant.
+          examples: ["https://aiguillage.dev/problems/invalid-request"]
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        errors:
+          type: array
+          description: Détail champ par champ, présent sur les erreurs de validation.
+          items:
+            type: object
+            required: [field, message]
+            properties:
+              field: { type: string }
+              message: { type: string }
+            additionalProperties: false
+      additionalProperties: false
+
+  responses:
+    BadRequest:
+      description: Requête invalide — paramètre manquant, mal formé ou hors bornes.
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+          example:
+            type: https://aiguillage.dev/problems/invalid-request
+            title: Requête invalide
+            status: 400
+            detail: Un ou plusieurs paramètres sont invalides.
+            errors:
+              - field: date
+                message: Format attendu AAAA-MM-JJ.
+    Unauthorized:
+      description: Clé d'API absente, inconnue ou révoquée.
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+          example:
+            type: https://aiguillage.dev/problems/unauthorized
+            title: Clé d'API invalide
+            status: 401
+            detail: Fournissez une clé valide dans l'en-tête X-API-Key.
+    NotFound:
+      description: La ressource demandée n'existe pas.
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+          example:
+            type: https://aiguillage.dev/problems/not-found
+            title: Ressource introuvable
+            status: 404
+    TooManyRequests:
+      description: Quota dépassé sur la fenêtre courante.
+      headers:
+        RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimit" }
+        RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemaining" }
+        RateLimit-Reset: { $ref: "#/components/headers/RateLimitReset" }
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+          example:
+            type: https://aiguillage.dev/problems/quota-exceeded
+            title: Quota dépassé
+            status: 429
+            detail: Quota mensuel épuisé. Réarmement le 1er du mois.
