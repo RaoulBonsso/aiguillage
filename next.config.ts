@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   // pas un `readFileSync` sur un chemin calculé et le fichier manquerait en
   // production — la panne classique du « ça marche en local ».
   outputFileTracingIncludes: {
-    "/**": ["./spec/**"],
+    "/**": ["./spec/**", "./docs/architecture/**"],
   },
 };
 

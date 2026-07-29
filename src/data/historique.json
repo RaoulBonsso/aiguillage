@@ -1,0 +1,93 @@
+{
+  "genere_le": "2026-07-29T15:02:38.374Z",
+  "commits": [
+    {
+      "hash": "c3aa858",
+      "date": "2026-07-28T23:25:00+02:00",
+      "sujet": "chore: fondation Aiguillage — Next.js 16, TypeScript, Vitest",
+      "type": "chore",
+      "portee": null,
+      "titre": "fondation Aiguillage — Next.js 16, TypeScript, Vitest"
+    },
+    {
+      "hash": "ff123b0",
+      "date": "2026-07-28T23:25:00+02:00",
+      "sujet": "docs(spec): contrat OpenAPI v1 ecrit avant toute ligne de code",
+      "type": "docs",
+      "portee": "spec",
+      "titre": "contrat OpenAPI v1 ecrit avant toute ligne de code"
+    },
+    {
+      "hash": "e8af463",
+      "date": "2026-07-28T23:27:50+02:00",
+      "sujet": "feat(catalogue): horaire roulant genere et verifie contre la spec (GREEN)",
+      "type": "feat",
+      "portee": "catalogue",
+      "titre": "horaire roulant genere et verifie contre la spec (GREEN)"
+    },
+    {
+      "hash": "b09dc6b",
+      "date": "2026-07-28T23:29:34+02:00",
+      "sujet": "feat(recherche): filtres, disponibilite adaptee au groupe et pagination (GREEN)",
+      "type": "feat",
+      "portee": "recherche",
+      "titre": "filtres, disponibilite adaptee au groupe et pagination (GREEN)"
+    },
+    {
+      "hash": "b28f5fb",
+      "date": "2026-07-28T23:31:50+02:00",
+      "sujet": "feat(cles): emission, revocation, quota mensuel et journal d'usage (GREEN)",
+      "type": "feat",
+      "portee": "cles",
+      "titre": "emission, revocation, quota mensuel et journal d'usage (GREEN)"
+    },
+    {
+      "hash": "12172ef",
+      "date": "2026-07-28T23:35:50+02:00",
+      "sujet": "feat(api): quatre operations v1 servies et validees contre la spec (GREEN)",
+      "type": "feat",
+      "portee": "api",
+      "titre": "quatre operations v1 servies et validees contre la spec (GREEN)"
+    },
+    {
+      "hash": "7d3733d",
+      "date": "2026-07-28T23:40:55+02:00",
+      "sujet": "feat(portail): documentation generee depuis le contrat, essayable en direct",
+      "type": "feat",
+      "portee": "portail",
+      "titre": "documentation generee depuis le contrat, essayable en direct"
+    },
+    {
+      "hash": "2439cba",
+      "date": "2026-07-28T23:43:47+02:00",
+      "sujet": "feat(console): administration des cles, quotas et journal d'appels",
+      "type": "feat",
+      "portee": "console",
+      "titre": "administration des cles, quotas et journal d'appels"
+    },
+    {
+      "hash": "81ca6cb",
+      "date": "2026-07-28T23:46:03+02:00",
+      "sujet": "docs: architecture (Mermaid), six ADR et README vitrine",
+      "type": "docs",
+      "portee": null,
+      "titre": "architecture (Mermaid), six ADR et README vitrine"
+    },
+    {
+      "hash": "1e4da8c",
+      "date": "2026-07-28T23:49:51+02:00",
+      "sujet": "docs: fiche de demo pour l'entretien du 4 aout",
+      "type": "docs",
+      "portee": null,
+      "titre": "fiche de demo pour l'entretien du 4 aout"
+    },
+    {
+      "hash": "e8da449",
+      "date": "2026-07-28T23:51:57+02:00",
+      "sujet": "fix(validation): rejeter vraiment les dates inexistantes, une erreur par faute",
+      "type": "fix",
+      "portee": "validation",
+      "titre": "rejeter vraiment les dates inexistantes, une erreur par faute"
+    }
+  ]
+}

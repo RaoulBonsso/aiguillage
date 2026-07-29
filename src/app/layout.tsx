@@ -25,6 +25,8 @@ export const metadata: Metadata = {
 const liens = [
   { href: "/", libelle: "Accueil" },
   { href: "/docs", libelle: "Documentation" },
+  { href: "/guide", libelle: "Guide" },
+  { href: "/presentation", libelle: "Présentation" },
   { href: "/admin", libelle: "Console" },
 ];
 
@@ -45,18 +47,20 @@ export default function RootLayout({
               <Aiguille />
               <span className="font-semibold tracking-tight">Aiguillage</span>
             </Link>
-            <nav className="flex items-center gap-1 text-sm">
+            {/* Défilement horizontal plutôt qu'un menu burger : cinq liens
+                courts se parcourent au pouce sans ouvrir quoi que ce soit. */}
+            <nav className="-mx-1 flex flex-1 items-center gap-1 overflow-x-auto px-1 text-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {liens.map((lien) => (
                 <Link
                   key={lien.href}
                   href={lien.href}
-                  className="rounded-md px-3 py-1.5 text-rail-300 transition-colors hover:bg-rail-850 hover:text-rail-100"
+                  className="shrink-0 rounded-md px-3 py-1.5 text-rail-300 transition-colors hover:bg-rail-850 hover:text-rail-100"
                 >
                   {lien.libelle}
                 </Link>
               ))}
             </nav>
-            <span className="ml-auto hidden rounded-full border border-rail-800 px-2.5 py-1 font-mono text-[11px] text-rail-400 sm:block">
+            <span className="hidden shrink-0 rounded-full border border-rail-800 px-2.5 py-1 font-mono text-[11px] text-rail-400 sm:block">
               v1
             </span>
           </div>
