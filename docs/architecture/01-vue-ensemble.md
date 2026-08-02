@@ -13,7 +13,7 @@ peut s'en servir : un portail de documentation et une console d'administration.
 ```mermaid
 flowchart LR
     A[Données brutes<br/>horaires · tarifs] --> B[Édition de l'offre<br/>produits vendables]
-    B --> C{{Aiguillage}}
+    B --> C
     C --> D[Canaux de vente<br/>sites · applis · agences]
     D --> E[Voyageur]
 
