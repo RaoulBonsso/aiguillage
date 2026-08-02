@@ -138,7 +138,7 @@ C'est le concept central du projet. Il mérite qu'on distingue trois choses souv
 **La nuance qui compte.** Un test classique s'écrit ainsi :
 
 ```ts
-expect(body).toEqual({ code: "FRPAR", name: "Paris Gare de Lyon", /* … */ });
+expect(body).toEqual({ code: "FRPAR", name: "Paris Montparnasse", /* … */ });
 ```
 
 Ce test ne prouve que la cohérence du développeur **avec lui-même**. Si le dev s'est trompé dans la
