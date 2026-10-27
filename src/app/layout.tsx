@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
+import { NavPrincipale } from "@/components/NavPrincipale";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Archivo est variable en largeur : la même famille donne les titres condensés
+// de la signalétique et le texte courant, sans mélanger deux voix.
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
+  axes: ["wdth"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -19,16 +24,8 @@ export const metadata: Metadata = {
     template: "%s · Aiguillage",
   },
   description:
-    "L'offre ferroviaire exposée aux canaux de vente : une API REST spécifiée en OpenAPI, son portail de documentation et sa console d'administration.",
+    "L'API qui met des trains en vente : horaires, tarifs et places disponibles servis aux sites, applis et agences. Contrat OpenAPI écrit avant le code, documentation générée, console d'accès.",
 };
-
-const liens = [
-  { href: "/", libelle: "Accueil" },
-  { href: "/docs", libelle: "Documentation" },
-  { href: "/guide", libelle: "Guide" },
-  { href: "/presentation", libelle: "Présentation" },
-  { href: "/admin", libelle: "Console" },
-];
 
 export default function RootLayout({
   children,
@@ -36,44 +33,70 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="fr"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        <header className="sticky top-0 z-40 border-b border-rail-800/80 bg-rail-950/80 backdrop-blur">
-          <div className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-5">
-            <Link href="/" className="group flex items-center gap-2.5">
-              <Aiguille />
-              <span className="font-semibold tracking-tight">Aiguillage</span>
+    <html lang="fr" className={`${archivo.variable} ${plexMono.variable} h-full`}>
+      <body className="flex min-h-full flex-col">
+        <a
+          href="#contenu"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:bg-signal-500 focus:px-3 focus:py-2 focus:text-rail-950"
+        >
+          Aller au contenu
+        </a>
+
+        <header className="sticky top-0 z-40 border-b border-rail-800 bg-rail-950">
+          <div className="mx-auto flex h-14 max-w-[84rem] items-stretch gap-6 px-5">
+            <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Aiguillage, accueil">
+              <Logo />
+              <span className="titre-voie text-[22px] leading-none tracking-wide">Aiguillage</span>
             </Link>
-            {/* Défilement horizontal plutôt qu'un menu burger : cinq liens
-                courts se parcourent au pouce sans ouvrir quoi que ce soit. */}
-            <nav className="-mx-1 flex flex-1 items-center gap-1 overflow-x-auto px-1 text-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {liens.map((lien) => (
-                <Link
-                  key={lien.href}
-                  href={lien.href}
-                  className="shrink-0 rounded-md px-3 py-1.5 text-rail-300 transition-colors hover:bg-rail-850 hover:text-rail-100"
-                >
-                  {lien.libelle}
-                </Link>
-              ))}
-            </nav>
-            <span className="hidden shrink-0 rounded-full border border-rail-800 px-2.5 py-1 font-mono text-[11px] text-rail-400 sm:block">
-              v1
-            </span>
+            <NavPrincipale />
+            <div className="hidden shrink-0 items-center gap-3 md:flex">
+              <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-rail-400">
+                <span className="relative flex h-2 w-2" aria-hidden>
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-vert-500 opacity-50" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-vert-500" />
+                </span>
+                En service
+              </span>
+              <span className="border border-rail-700 px-1.5 py-0.5 font-mono text-[11px] text-rail-300">v1</span>
+            </div>
           </div>
         </header>
 
-        <main className="flex-1">{children}</main>
+        <main id="contenu" className="flex-1">
+          {children}
+        </main>
 
-        <footer className="border-t border-rail-800/80">
-          <div className="mx-auto max-w-6xl px-5 py-8 text-sm text-rail-400">
-            <p>
-              Aiguillage est une démonstration technique. Les transporteurs, lignes et tarifs
-              présentés sont fictifs.
-            </p>
+        <footer className="border-t border-rail-800">
+          <div className="mx-auto grid max-w-[84rem] gap-8 px-5 py-10 text-[13px] text-rail-400 md:grid-cols-[1fr_auto_auto]">
+            <div className="max-w-md space-y-2">
+              <p className="titre-voie text-[18px] text-rail-100">Aiguillage</p>
+              <p>
+                Projet de démonstration conçu et développé par Raoul Bonsso. Transporteurs, lignes et
+                tarifs sont fictifs.
+              </p>
+            </div>
+            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+              <dt className="etiquette text-rail-600">Pile</dt>
+              <dd>Next.js 16 · TypeScript · Zod · Ajv · Vitest</dd>
+              <dt className="etiquette text-rail-600">Contrat</dt>
+              <dd>OpenAPI 3.1</dd>
+              <dt className="etiquette text-rail-600">Licence</dt>
+              <dd>MIT</dd>
+            </dl>
+            <div className="flex flex-col gap-1">
+              <a
+                href="https://github.com/RaoulBonsso/aiguillage"
+                className="text-rail-100 underline decoration-rail-700 underline-offset-4 transition-colors hover:decoration-signal-500"
+              >
+                Code source sur GitHub
+              </a>
+              <a
+                href="/api/openapi"
+                className="text-rail-100 underline decoration-rail-700 underline-offset-4 transition-colors hover:decoration-signal-500"
+              >
+                Télécharger openapi.yaml
+              </a>
+            </div>
           </div>
         </footer>
       </body>
@@ -81,26 +104,14 @@ export default function RootLayout({
   );
 }
 
-/** Le pictogramme : deux voies qui divergent depuis un même point. */
-function Aiguille() {
+/** Le pictogramme : une aiguille, une voie qui se sépare en deux, sur un pavé jaune. */
+function Logo() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5 text-signal-500">
-      <path
-        d="M3 20V9a3 3 0 0 1 3-3h1M3 20h4M3 14h4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-      <path
-        d="M7 6h4l4-3M7 14h6l5 4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.7"
-      />
-    </svg>
+    <span className="flex h-8 w-8 items-center justify-center bg-signal-500" aria-hidden>
+      <svg viewBox="0 0 24 24" className="h-5 w-5 text-rail-950">
+        <path d="M4 21V12c0-3.5 2.5-6 6-6h10" fill="none" stroke="currentColor" strokeWidth="2.4" />
+        <path d="M4 12V3" fill="none" stroke="currentColor" strokeWidth="2.4" />
+      </svg>
+    </span>
   );
 }
