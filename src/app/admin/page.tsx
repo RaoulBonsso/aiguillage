@@ -27,11 +27,15 @@ export default async function ConsolePage() {
   const appels = etats.reduce((total, etat) => total + etat.used, 0);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-10 px-5 py-10">
+    <div className="mx-auto max-w-[84rem] space-y-12 px-5 py-12">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Console d&apos;administration</h1>
-          <p className="mt-1 text-[14px] text-rail-400">
+          <p className="etiquette flex items-center gap-3 text-rail-400">
+            <span className="pave-voie">04</span>
+            Console
+          </p>
+          <h1 className="titre-voie mt-5 text-[clamp(2.4rem,4.6vw,3.8rem)] text-rail-100">Console d&apos;administration</h1>
+          <p className="mt-4 text-[15px] text-rail-400">
             Les accès des canaux de vente et leur consommation.
           </p>
         </div>
@@ -42,7 +46,7 @@ export default async function ConsolePage() {
         </form>
       </header>
 
-      <section className="grid gap-4 sm:grid-cols-4">
+      <section className="grid border-l border-t border-rail-800 sm:grid-cols-4">
         <Tuile valeur={String(actives)} libelle="clés actives" />
         <Tuile valeur={appels.toLocaleString("fr-FR")} libelle="appels ce mois-ci" />
         <Tuile valeur={offers.length.toLocaleString("fr-FR")} libelle="offres au catalogue" />
@@ -50,17 +54,17 @@ export default async function ConsolePage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold tracking-tight">Émettre une clé</h2>
+        <h2 className="titre-voie text-[28px] text-rail-100">Émettre une clé</h2>
         <div className="rounded-xl border border-rail-800 bg-rail-900/40 p-5">
           <FormulaireNouvelleCle />
         </div>
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold tracking-tight">Clés d&apos;API</h2>
+        <h2 className="titre-voie text-[28px] text-rail-100">Clés d&apos;API</h2>
         <div className="overflow-x-auto rounded-xl border border-rail-800">
           <table className="w-full min-w-[46rem] border-collapse text-left text-[13px]">
-            <thead className="bg-rail-900/60 text-[11px] uppercase tracking-wider text-rail-400">
+            <thead className="etiquette bg-rail-900 text-rail-500">
               <tr>
                 <th className="px-4 py-2.5 font-medium">Canal</th>
                 <th className="px-4 py-2.5 font-medium">Préfixe</th>
@@ -93,7 +97,7 @@ export default async function ConsolePage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
                         <div
-                          className="h-1.5 w-24 overflow-hidden rounded-full bg-rail-800"
+                          className="h-2 w-28 overflow-hidden bg-rail-800"
                           role="img"
                           aria-label={`${proportion} % du quota consommé`}
                         >
@@ -109,11 +113,11 @@ export default async function ConsolePage() {
                     </td>
                     <td className="px-4 py-3">
                       {cle.revoked_at ? (
-                        <span className="rounded bg-rouge-500/15 px-2 py-0.5 text-[11px] text-rouge-500">
+                        <span className="etiquette bg-rouge-500 px-1.5 py-0.5 text-rail-950">
                           révoquée
                         </span>
                       ) : (
-                        <span className="rounded bg-vert-500/15 px-2 py-0.5 text-[11px] text-vert-500">
+                        <span className="etiquette bg-vert-500 px-1.5 py-0.5 text-rail-950">
                           active
                         </span>
                       )}
@@ -140,7 +144,7 @@ export default async function ConsolePage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold tracking-tight">Derniers appels</h2>
+        <h2 className="titre-voie text-[28px] text-rail-100">Derniers appels</h2>
         {journal.length === 0 ? (
           <p className="text-[14px] text-rail-400">
             Aucun appel enregistré pour l&apos;instant. Le portail de documentation en produit dès
@@ -179,9 +183,9 @@ export default async function ConsolePage() {
 
 function Tuile({ valeur, libelle }: { valeur: string; libelle: string }) {
   return (
-    <div className="rounded-xl border border-rail-800 bg-rail-900/40 p-4">
-      <p className="font-mono text-2xl font-semibold text-signal-400">{valeur}</p>
-      <p className="mt-1 text-[13px] text-rail-400">{libelle}</p>
+    <div className="border-b border-r border-rail-800 p-5">
+      <p className="chiffres titre-voie text-[48px] text-rail-100">{valeur}</p>
+      <p className="etiquette mt-2 text-rail-500">{libelle}</p>
     </div>
   );
 }

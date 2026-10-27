@@ -31,12 +31,12 @@ export default function DocsPage() {
   const defauts = valeursDeDepart();
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-10 px-5 py-10 lg:grid-cols-[15rem_1fr]">
-      <aside className="lg:sticky lg:top-20 lg:h-fit">
+    <div className="mx-auto grid max-w-[84rem] gap-10 px-5 py-12 lg:grid-cols-[15rem_1fr] lg:gap-14">
+      <aside className="lg:sticky lg:top-24 lg:h-fit">
         <nav className="space-y-5 text-sm">
           {themes.map((theme) => (
             <div key={theme.name}>
-              <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-rail-400">
+              <p className="etiquette mb-2 text-rail-600">
                 {theme.name}
               </p>
               <ul className="space-y-0.5">
@@ -44,7 +44,7 @@ export default function DocsPage() {
                   <li key={operation.id}>
                     <a
                       href={`#${operation.id}`}
-                      className="flex items-baseline gap-2 rounded-md px-2 py-1 text-rail-300 transition-colors hover:bg-rail-850 hover:text-rail-100"
+                      className="flex items-center gap-2.5 border-l-2 border-transparent py-1.5 pl-2.5 font-mono text-[13px] text-rail-300 transition-colors hover:border-signal-500 hover:text-rail-100"
                     >
                       <MethodBadge method={operation.method} />
                       <span className="truncate">{operation.path}</span>
@@ -57,7 +57,7 @@ export default function DocsPage() {
           <div className="border-t border-rail-800 pt-4">
             <a
               href="/api/openapi"
-              className="rounded-md px-2 py-1 text-rail-400 transition-colors hover:text-signal-400"
+              className="font-mono text-[12px] text-rail-400 underline decoration-rail-700 underline-offset-4 transition-colors hover:text-signal-400 hover:decoration-signal-500"
             >
               Télécharger openapi.yaml ↓
             </a>
@@ -67,11 +67,12 @@ export default function DocsPage() {
 
       <div className="min-w-0 space-y-12">
         <header className="space-y-4">
-          <p className="font-mono text-xs uppercase tracking-wider text-signal-500">
-            {spec.info.title} · v{spec.info.version}
+          <p className="etiquette flex items-center gap-3 text-rail-400">
+            <span className="pave-voie">02</span>
+            Contrat OpenAPI · v{spec.info.version}
           </p>
-          <h1 className="text-3xl font-semibold tracking-tight">Documentation de l&apos;API</h1>
-          <p className="max-w-2xl text-[15px] leading-relaxed text-rail-300">{spec.info.summary}</p>
+          <h1 className="titre-voie pt-2 text-[clamp(2.6rem,5vw,4.4rem)] text-rail-100">Documentation de l&apos;API</h1>
+          <p className="max-w-2xl text-[17px] leading-relaxed text-rail-300">{spec.info.summary}</p>
           <div className="rail-line" />
           <div className="max-w-2xl space-y-3 text-[14px] leading-relaxed text-rail-300">
             {(spec.info.description ?? "")
@@ -82,19 +83,26 @@ export default function DocsPage() {
               ))}
           </div>
 
-          <div className="rounded-lg border border-signal-500/25 bg-signal-500/5 p-4">
-            <p className="text-[13px] text-rail-300">
+          <div className="grid border border-rail-800 bg-rail-900 sm:grid-cols-[auto_1fr]">
+            <span className="hachures hidden w-3 sm:block" aria-hidden />
+            <div className="p-4">
+            <p className="etiquette mb-2 text-signal-500">Bac à sable public</p>
+            <p className="text-[14px] text-rail-300">
               Une clé de bac à sable publique est déjà branchée dans les exemples ci-dessous.
               Aucune inscription : les boutons « Envoyer » appellent l&apos;API en direct.
             </p>
-            <code className="mt-2 block font-mono text-[12px] text-signal-400">{demoSecret()}</code>
+            <code className="mt-3 inline-block border border-rail-700 bg-rail-950 px-2 py-1 font-mono text-[12px] text-signal-400">{demoSecret()}</code>
+            </div>
           </div>
         </header>
 
-        {themes.map((theme) => (
+        {themes.map((theme, indexTheme) => (
           <section key={theme.name} className="space-y-8">
-            <div>
-              <h2 className="text-xl font-semibold tracking-tight">{theme.name}</h2>
+            <div className="border-t border-rail-100 pt-5">
+              <p className="chiffres font-mono text-[12px] text-rail-600">
+                {String(indexTheme + 1).padStart(2, "0")} / {String(themes.length).padStart(2, "0")}
+              </p>
+              <h2 className="titre-voie mt-2 text-[40px] text-rail-100">{theme.name}</h2>
               {theme.description ? (
                 <p className="mt-1 text-[14px] text-rail-400">{theme.description}</p>
               ) : null}
@@ -104,17 +112,17 @@ export default function DocsPage() {
               <article
                 key={operation.id}
                 id={operation.id}
-                className="scroll-mt-20 space-y-5 rounded-xl border border-rail-800 bg-rail-900/40 p-5"
+                className="scroll-mt-24 space-y-6 border border-rail-800 bg-rail-900/40 p-5 sm:p-6"
               >
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2.5">
                     <MethodBadge method={operation.method} />
-                    <code className="font-mono text-[15px] text-rail-100">
+                    <code className="break-all font-mono text-[16px] font-medium text-rail-100">
                       {base}
                       {operation.path}
                     </code>
                   </div>
-                  <h3 className="text-[15px] font-medium text-rail-100">{operation.summary}</h3>
+                  <h3 className="titre-voie pt-1 text-[26px] text-rail-100">{operation.summary}</h3>
                   {operation.description
                     .split("\n\n")
                     .filter(Boolean)
@@ -127,7 +135,7 @@ export default function DocsPage() {
 
                 {operation.parameters.length > 0 ? (
                   <div>
-                    <h4 className="mb-2 text-[12px] font-semibold uppercase tracking-wider text-rail-400">
+                    <h4 className="etiquette mb-3 text-rail-500">
                       Paramètres
                     </h4>
                     <div className="overflow-x-auto">
@@ -169,7 +177,7 @@ export default function DocsPage() {
                 ) : null}
 
                 <div>
-                  <h4 className="mb-2 text-[12px] font-semibold uppercase tracking-wider text-rail-400">
+                  <h4 className="etiquette mb-3 text-rail-500">
                     Réponses
                   </h4>
                   <div className="space-y-3">
@@ -177,7 +185,7 @@ export default function DocsPage() {
                       <details
                         key={reponse.status}
                         open={reponse.status.startsWith("2")}
-                        className="rounded-lg border border-rail-800 bg-rail-950/50"
+                        className="border border-rail-800 bg-rail-950"
                       >
                         <summary className="flex cursor-pointer items-center gap-2.5 px-3.5 py-2 text-[13px]">
                           <StatusBadge status={reponse.status} />
@@ -233,7 +241,7 @@ function valeursDeDepart(): Record<string, string> {
 
 function MethodBadge({ method }: { method: string }) {
   return (
-    <span className="rounded bg-vert-500/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-vert-500">
+    <span className="bg-vert-500 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-rail-950">
       {method}
     </span>
   );
@@ -241,10 +249,10 @@ function MethodBadge({ method }: { method: string }) {
 
 function StatusBadge({ status }: { status: string }) {
   const couleur = status.startsWith("2")
-    ? "bg-vert-500/15 text-vert-500"
+    ? "bg-vert-500 text-rail-950"
     : status.startsWith("4")
-      ? "bg-signal-500/15 text-signal-500"
-      : "bg-rouge-500/15 text-rouge-500";
+      ? "bg-signal-500 text-rail-950"
+      : "bg-rouge-500 text-rail-950";
 
-  return <span className={`rounded px-1.5 py-0.5 font-mono text-[11px] font-semibold ${couleur}`}>{status}</span>;
+  return <span className={`px-1.5 py-0.5 font-mono text-[11px] font-semibold ${couleur}`}>{status}</span>;
 }

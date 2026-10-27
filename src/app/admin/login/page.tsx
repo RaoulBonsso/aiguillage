@@ -13,7 +13,11 @@ export default async function ConnexionPage() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col justify-center px-5 py-24">
-      <h1 className="text-2xl font-semibold tracking-tight">Console d&apos;administration</h1>
+      <p className="etiquette flex items-center gap-3 text-rail-400">
+        <span className="pave-voie">04</span>
+        Accès restreint
+      </p>
+      <h1 className="titre-voie mt-5 text-[44px] text-rail-100">Console d&apos;administration</h1>
       <p className="mt-2 mb-8 text-[14px] leading-relaxed text-rail-400">
         Émission et révocation des clés d&apos;API, suivi de la consommation des canaux de vente.
       </p>

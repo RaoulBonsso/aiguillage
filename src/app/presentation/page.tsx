@@ -34,10 +34,11 @@ export default function PresentationPage() {
       titre: "Aiguillage",
       contenu: (
         <div>
-          <p className="font-mono text-[13px] uppercase tracking-[0.25em] text-signal-500">
+          <p className="etiquette flex items-center gap-3 text-rail-400">
+            <span className="pave-voie">05</span>
             API-as-a-Product
           </p>
-          <h1 className="mt-6 text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+          <h1 className="titre-voie mt-7 text-[clamp(4rem,10vw,8.5rem)] text-rail-100">
             Aiguillage
           </h1>
           <p className="mt-5 max-w-2xl text-xl leading-relaxed text-rail-300">
@@ -478,7 +479,7 @@ export default function PresentationPage() {
 
 function Titre({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="max-w-4xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+    <h2 className="titre-voie max-w-4xl text-[clamp(2.2rem,4.4vw,3.6rem)] text-rail-100">
       {children}
     </h2>
   );
@@ -487,7 +488,7 @@ function Titre({ children }: { children: React.ReactNode }) {
 function Mesure({ valeur, libelle }: { valeur: string; libelle: string }) {
   return (
     <div>
-      <p className="font-mono text-3xl font-semibold text-signal-400">{valeur}</p>
+      <p className="chiffres titre-voie text-[52px] text-rail-100">{valeur}</p>
       <p className="mt-1 text-[14px] text-rail-400">{libelle}</p>
     </div>
   );

@@ -49,12 +49,13 @@ export default function GuidePage() {
   );
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-10">
+    <div className="mx-auto max-w-[84rem] px-5 py-12">
       <header className="max-w-3xl">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-signal-500">
+        <p className="etiquette flex items-center gap-3 text-rail-400">
+          <span className="pave-voie">03</span>
           Guide technique
         </p>
-        <h1 className="mt-4 text-4xl font-semibold leading-[1.12] tracking-tight">
+        <h1 className="titre-voie mt-6 text-[clamp(2.6rem,5.4vw,4.8rem)] text-rail-100">
           Ce qu&apos;il y a sous le portail.
         </h1>
         <p className="mt-5 text-[17px] leading-relaxed text-rail-300">
@@ -196,8 +197,11 @@ function Section({
   return (
     <section id={id} className="scroll-mt-24">
       <div className="mb-6 max-w-2xl">
-        <p className="font-mono text-[11px] uppercase tracking-wider text-signal-500">{numero}</p>
-        <h2 className="mt-1.5 text-2xl font-semibold tracking-tight">{titre}</h2>
+        <p className="flex items-center gap-3">
+          <span className="pave-voie">{numero}</span>
+          <span className="h-px flex-1 bg-rail-800" aria-hidden />
+        </p>
+        <h2 className="titre-voie mt-4 text-[36px] text-rail-100">{titre}</h2>
         <p className="mt-2.5 text-[15px] leading-relaxed text-rail-300">{chapeau}</p>
       </div>
       {children}
@@ -210,7 +214,7 @@ function Mesure({ valeur, libelle }: { valeur: string; libelle: string }) {
     <div>
       <dt className="sr-only">{libelle}</dt>
       <dd>
-        <span className="block font-mono text-2xl font-semibold text-signal-400">{valeur}</span>
+        <span className="chiffres titre-voie block text-[44px] text-rail-100">{valeur}</span>
         <span className="mt-0.5 block text-[13px] leading-snug text-rail-400">{libelle}</span>
       </dd>
     </div>
