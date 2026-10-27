@@ -199,6 +199,15 @@ function secondesAvant(echeance: Date, instant: Date): number {
 }
 
 function publier(record: ApiKeyRecord): ApiKeyView {
-  const { hash: _hash, ...vue } = record;
-  return vue;
+  // Liste blanche plutôt que retrait de l'empreinte : un champ ajouté plus tard
+  // au stockage ne fuit pas vers les réponses sans qu'on l'ait décidé.
+  return {
+    id: record.id,
+    name: record.name,
+    prefix: record.prefix,
+    quota: record.quota,
+    created_at: record.created_at,
+    revoked_at: record.revoked_at,
+    usage: record.usage,
+  };
 }

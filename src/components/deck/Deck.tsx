@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 
 /**
@@ -18,8 +18,23 @@ export type Diapo = {
   contenu: React.ReactNode;
 };
 
+// L'URL n'est lue qu'à l'ouverture : la navigation la réécrit ensuite avec
+// replaceState, qui n'émet aucun événement à écouter.
+const sansAbonnement = () => () => {};
+const hashDeLUrl = () => window.location.hash;
+const hashCoteServeur = () => "";
+
+function indexDepuisHash(hash: string, total: number): number {
+  const depuisUrl = Number(hash.replace("#", ""));
+  return Number.isInteger(depuisUrl) && depuisUrl >= 1 && depuisUrl <= total ? depuisUrl - 1 : 0;
+}
+
 export function Deck({ diapos }: { diapos: Diapo[] }) {
-  const [index, setIndex] = useState(0);
+  // Une URL partagée (#7) doit ouvrir la bonne diapo. Le serveur rend la
+  // première, le client corrige à l'hydratation tant qu'on n'a pas navigué.
+  const hash = useSyncExternalStore(sansAbonnement, hashDeLUrl, hashCoteServeur);
+  const [choix, setIndex] = useState<number | null>(null);
+  const index = choix ?? indexDepuisHash(hash, diapos.length);
   const [sommaire, setSommaire] = useState(false);
   const [sens, setSens] = useState<1 | -1>(1);
 
@@ -34,14 +49,6 @@ export function Deck({ diapos }: { diapos: Diapo[] }) {
     },
     [diapos.length, index],
   );
-
-  // Une URL partagée (#7) doit ouvrir la bonne diapo.
-  useEffect(() => {
-    const depuisUrl = Number(window.location.hash.replace("#", ""));
-    if (Number.isInteger(depuisUrl) && depuisUrl >= 1 && depuisUrl <= diapos.length) {
-      setIndex(depuisUrl - 1);
-    }
-  }, [diapos.length]);
 
   useEffect(() => {
     function auClavier(evenement: KeyboardEvent) {

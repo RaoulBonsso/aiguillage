@@ -18,6 +18,41 @@ type Scenario = {
   attendu: string;
 };
 
+type Reponse = {
+  status: number;
+  duree: number;
+  quota: string | null;
+  corps: string;
+};
+
+/** Hors du composant : chronométrer un appel n'a rien à faire dans un rendu. */
+async function chronometrer(choisi: Scenario): Promise<Reponse> {
+  const depart = performance.now();
+
+  try {
+    const resultat = await fetch(choisi.chemin, {
+      headers: choisi.cle_api ? { "X-API-Key": choisi.cle_api } : {},
+    });
+    const texte = await resultat.text();
+    const limite = resultat.headers.get("RateLimit-Limit");
+    const restant = resultat.headers.get("RateLimit-Remaining");
+
+    return {
+      status: resultat.status,
+      duree: Math.round(performance.now() - depart),
+      quota: limite ? `${restant} / ${limite}` : null,
+      corps: joli(texte),
+    };
+  } catch (erreur) {
+    return {
+      status: 0,
+      duree: Math.round(performance.now() - depart),
+      quota: null,
+      corps: `Appel impossible : ${(erreur as Error).message}`,
+    };
+  }
+}
+
 const CLE_DEMO = "agl_live_demo00000000000000000000000000";
 
 function dansTroisJours(): string {
@@ -58,41 +93,15 @@ export function DemoEnDirect() {
   ];
 
   const [scenario, setScenario] = useState<Scenario>(scenarios[0]);
-  const [reponse, setReponse] = useState<{
-    status: number;
-    duree: number;
-    quota: string | null;
-    corps: string;
-  } | null>(null);
+  const [reponse, setReponse] = useState<Reponse | null>(null);
   const [enCours, setEnCours] = useState(false);
 
   async function appeler(choisi: Scenario) {
     setScenario(choisi);
     setEnCours(true);
     setReponse(null);
-    const depart = performance.now();
-
     try {
-      const resultat = await fetch(choisi.chemin, {
-        headers: choisi.cle_api ? { "X-API-Key": choisi.cle_api } : {},
-      });
-      const texte = await resultat.text();
-      const limite = resultat.headers.get("RateLimit-Limit");
-      const restant = resultat.headers.get("RateLimit-Remaining");
-
-      setReponse({
-        status: resultat.status,
-        duree: Math.round(performance.now() - depart),
-        quota: limite ? `${restant} / ${limite}` : null,
-        corps: joli(texte),
-      });
-    } catch (erreur) {
-      setReponse({
-        status: 0,
-        duree: Math.round(performance.now() - depart),
-        quota: null,
-        corps: `Appel impossible : ${(erreur as Error).message}`,
-      });
+      setReponse(await chronometrer(choisi));
     } finally {
       setEnCours(false);
     }
