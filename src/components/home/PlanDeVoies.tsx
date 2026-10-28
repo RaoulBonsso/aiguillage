@@ -60,13 +60,13 @@ export function PlanDeVoies() {
             {arret.deviation ? (
               <div className="mb-3 flex items-end gap-2 md:absolute md:left-[11px] md:top-0 md:mb-0 md:h-[78px]">
                 <svg viewBox="0 0 40 78" className="hidden h-[78px] w-10 shrink-0 md:block" aria-hidden>
-                  <path d="M2.5 78V46C2.5 28 14 14 32 14h8" fill="none" stroke="#ff5a45" strokeWidth="5" />
+                  <path d="M2.5 78V46C2.5 28 14 14 32 14h6" fill="none" stroke="#ff6b5b" strokeWidth="5" strokeLinecap="round" />
                 </svg>
-                <p className="flex items-center gap-1.5 text-[13px] leading-none md:-ml-1 md:mb-[54px]">
-                  <span className="bg-rouge-500 px-1.5 py-1 font-mono text-[12px] font-semibold text-plan-900">
+                <p className="flex items-center gap-1.5 text-[13px] leading-none md:-ml-1 md:mb-[44px] md:flex-col md:items-start md:gap-1">
+                  <span className="rounded-full bg-rouge-500 px-2 py-0.5 font-mono text-[12px] font-semibold text-white shadow-[0_4px_12px_-4px_rgb(255_107_91/0.7)]">
                     {arret.deviation.statut}
                   </span>
-                  <span className="whitespace-nowrap text-plan-600">{arret.deviation.motif}</span>
+                  <span className="text-plan-600 md:max-w-[8.5rem] md:text-[12px] md:leading-tight">{arret.deviation.motif}</span>
                 </p>
               </div>
             ) : null}
@@ -74,22 +74,22 @@ export function PlanDeVoies() {
             {/* La voie principale : verticale en mobile, horizontale en bureau. */}
             <span
               aria-hidden
-              className={`absolute left-[11px] top-0 w-[5px] bg-plan-900 md:left-0 md:top-[74px] md:h-[5px] ${
+              className={`absolute left-[11px] top-0 w-[5px] rounded-full bg-plan-900 md:left-0 md:top-[74px] md:h-[5px] ${
                 dernier ? "h-3 md:w-6" : "h-full md:w-full"
               }`}
             />
             {/* L'arrêt */}
             <span
               aria-hidden
-              className={`absolute left-0 top-0 flex h-[27px] w-[27px] items-center justify-center border-[5px] border-plan-900 font-mono text-[11px] font-semibold md:top-16 ${
-                dernier ? "bg-signal-500" : "bg-plan-50"
+              className={`absolute left-0 top-0 flex h-[27px] w-[27px] items-center justify-center rounded-full border-[5px] border-plan-900 font-mono text-[10px] font-bold md:top-16 ${
+                dernier ? "bg-signal-500 shadow-[0_0_0_6px_rgb(255_197_61/0.25)]" : "bg-plan-50"
               }`}
             >
               {arret.code}
             </span>
 
             <div className="md:pt-11">
-              <h3 className="titre-voie text-[24px] leading-none">{arret.titre}</h3>
+              <h3 className="titre-voie text-[19px] leading-tight">{arret.titre}</h3>
               <p className="mt-2 max-w-[22rem] text-[14px] leading-relaxed text-plan-600">{arret.detail}</p>
             </div>
           </li>

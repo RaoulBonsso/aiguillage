@@ -75,8 +75,8 @@ export function TryIt({ method, path, baseUrl, parameters, demoKey, defauts }: P
   }
 
   return (
-    <div className="rounded-lg border border-rail-800 bg-rail-900/60">
-      <div className="flex items-center justify-between gap-3 border-b border-rail-800 px-4 py-2.5">
+    <div className="overflow-hidden rounded-2xl bg-rail-950/60 ring-1 ring-inset ring-white/[0.08]">
+      <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-2.5">
         <h4 className="text-[13px] font-medium text-rail-300">Essayer</h4>
         <span className="font-mono text-[11px] text-rail-400">clé du bac à sable</span>
       </div>

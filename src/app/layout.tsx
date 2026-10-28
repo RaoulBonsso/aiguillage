@@ -1,21 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Archivo, IBM_Plex_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { NavPrincipale } from "@/components/NavPrincipale";
 import "./globals.css";
 
-// Archivo est variable en largeur : la même famille donne les titres condensés
-// de la signalétique et le texte courant, sans mélanger deux voix.
-const archivo = Archivo({
-  variable: "--font-archivo",
+// Geist pour l'interface et les titres, Geist Mono pour le code et les chiffres
+// (voir docs/DESIGN.md).
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
-  axes: ["wdth"],
 });
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -33,20 +31,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${archivo.variable} ${plexMono.variable} h-full`}>
+    <html lang="fr" className={`${geist.variable} ${geistMono.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <a
           href="#contenu"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:bg-signal-500 focus:px-3 focus:py-2 focus:text-rail-950"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-signal-500 focus:px-3 focus:py-2 focus:text-rail-950"
         >
           Aller au contenu
         </a>
 
-        <header className="sticky top-0 z-40 border-b border-rail-800 bg-rail-950">
-          <div className="mx-auto flex h-14 max-w-[84rem] items-stretch gap-6 px-5">
+        <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-rail-950/75 backdrop-blur-xl">
+          <div className="mx-auto flex h-14 max-w-[77.5rem] items-stretch gap-6 px-5">
             <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Aiguillage, accueil">
               <Logo />
-              <span className="titre-voie text-[22px] leading-none tracking-wide">Aiguillage</span>
+              <span className="titre-voie text-[17px] leading-none">Aiguillage</span>
             </Link>
             <NavPrincipale />
             <div className="hidden shrink-0 items-center gap-3 md:flex">
@@ -57,7 +55,7 @@ export default function RootLayout({
                 </span>
                 En service
               </span>
-              <span className="border border-rail-700 px-1.5 py-0.5 font-mono text-[11px] text-rail-300">v1</span>
+              <span className="rounded-full bg-white/[0.05] px-2 py-0.5 font-mono text-[11px] text-rail-300 ring-1 ring-inset ring-white/10">v1</span>
             </div>
           </div>
         </header>
@@ -66,10 +64,10 @@ export default function RootLayout({
           {children}
         </main>
 
-        <footer className="border-t border-rail-800">
-          <div className="mx-auto grid max-w-[84rem] gap-8 px-5 py-10 text-[13px] text-rail-400 md:grid-cols-[1fr_auto_auto]">
+        <footer className="border-t border-white/[0.06]">
+          <div className="mx-auto grid max-w-[77.5rem] gap-8 px-5 py-12 text-[13px] text-rail-400 md:grid-cols-[1fr_auto_auto]">
             <div className="max-w-md space-y-2">
-              <p className="titre-voie text-[18px] text-rail-100">Aiguillage</p>
+              <p className="titre-voie text-[16px] text-rail-100">Aiguillage</p>
               <p>
                 Projet de démonstration conçu et développé par Raoul Bonsso. Transporteurs, lignes et
                 tarifs sont fictifs.
@@ -107,10 +105,10 @@ export default function RootLayout({
 /** Le pictogramme : une aiguille, une voie qui se sépare en deux, sur un pavé jaune. */
 function Logo() {
   return (
-    <span className="flex h-8 w-8 items-center justify-center bg-signal-500" aria-hidden>
+    <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-signal-500 shadow-[inset_0_1px_0_rgb(255_255_255/0.4),0_6px_16px_-6px_rgb(255_197_61/0.7)]" aria-hidden>
       <svg viewBox="0 0 24 24" className="h-5 w-5 text-rail-950">
-        <path d="M4 21V12c0-3.5 2.5-6 6-6h10" fill="none" stroke="currentColor" strokeWidth="2.4" />
-        <path d="M4 12V3" fill="none" stroke="currentColor" strokeWidth="2.4" />
+        <path d="M4 21V12c0-3.5 2.5-6 6-6h10" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+        <path d="M4 12V3" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
       </svg>
     </span>
   );

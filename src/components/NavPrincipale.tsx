@@ -32,8 +32,8 @@ export function NavPrincipale() {
             key={voie.href}
             href={voie.href}
             aria-current={actif ? "page" : undefined}
-            className={`group relative flex shrink-0 items-center gap-2 px-3 text-[13px] transition-colors ${
-              actif ? "text-rail-100" : "text-rail-400 hover:text-rail-100"
+            className={`group relative my-2.5 flex shrink-0 items-center gap-2 rounded-lg px-3 text-[13px] transition-colors ${
+              actif ? "bg-white/[0.06] text-rail-100" : "text-rail-400 hover:bg-white/[0.03] hover:text-rail-100"
             }`}
           >
             <span
@@ -44,12 +44,6 @@ export function NavPrincipale() {
               {voie.numero}
             </span>
             {voie.libelle}
-            <span
-              aria-hidden
-              className={`absolute inset-x-3 bottom-0 h-[2px] bg-signal-500 transition-opacity ${
-                actif ? "opacity-100" : "opacity-0"
-              }`}
-            />
           </Link>
         );
       })}

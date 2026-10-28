@@ -135,6 +135,7 @@ export function Deck({ diapos }: { diapos: Diapo[] }) {
       </div>
 
       <div className="relative flex-1 overflow-y-auto">
+        <div aria-hidden className="halo pointer-events-none absolute inset-0" />
         {sommaire ? (
           <div className="mx-auto grid max-w-5xl gap-3 p-6 sm:grid-cols-2 lg:grid-cols-3">
             {diapos.map((element, rang) => (

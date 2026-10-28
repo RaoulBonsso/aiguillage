@@ -1,55 +1,56 @@
 @import "tailwindcss";
 
 /**
- * Design system d'Aiguillage — signalétique ferroviaire.
+ * Design system d'Aiguillage, v3 (voir docs/DESIGN.md).
  *
- * Le langage vient des gares, pas du web : un noir de tableau des départs,
- * un blanc froid de plan de voies, un seul jaune de signal. Angles vifs,
- * filets d'un pixel, titres condensés en capitales, chiffres tabulaires.
- * Les numéros de voie (01, 02…) servent de repères de navigation.
+ * Un poste d'aiguillage moderne : une nuit bleutée, un seul jaune de signal,
+ * des surfaces arrondies à peine bordées, Geist pour l'interface et Geist Mono
+ * pour ce qui est technique. Les numéros de voie (01, 02…) restent comme repères,
+ * en pastilles douces.
  */
 
 @theme {
-  /* Neutres légèrement froids : le noir d'un panneau, pas le bleu nuit d'un template. */
-  --color-rail-950: #0a0b0b;
-  --color-rail-900: #111312;
-  --color-rail-850: #171918;
-  --color-rail-800: #262928;
-  --color-rail-700: #323634;
-  --color-rail-600: #7b807d;
-  --color-rail-500: #8d928f;
-  --color-rail-400: #a3a8a5;
-  --color-rail-300: #c3c8c5;
-  --color-rail-200: #dde1df;
-  --color-rail-100: #eef0ee;
+  /* Nuit bleutée : fiable et calme, jamais noir pur. */
+  --color-rail-950: #08090c;
+  --color-rail-900: #0f1116;
+  --color-rail-850: #151820;
+  --color-rail-800: #232733;
+  --color-rail-700: #30354a;
+  --color-rail-600: #666d80;
+  --color-rail-500: #7f8799;
+  --color-rail-400: #9aa1b2;
+  --color-rail-300: #bec3d0;
+  --color-rail-200: #dde0e8;
+  --color-rail-100: #f3f4f7;
 
-  /* Le jaune de signal : réservé à ce qui se lit en premier. */
-  --color-signal-500: #ffc400;
-  --color-signal-400: #ffd23f;
-  --color-signal-200: #ffe999;
+  /* Le jaune de signal, plus ambré : de l'énergie, pas une alerte. */
+  --color-signal-500: #ffc53d;
+  --color-signal-400: #ffd36e;
+  --color-signal-200: #ffe7ad;
 
-  --color-vert-500: #3ccb7f;
-  --color-rouge-500: #ff5a45;
-  --color-violet-400: #8fb4c9;
+  --color-vert-500: #34d399;
+  --color-rouge-500: #ff6b5b;
+  --color-bleu-400: #7aa2ff;
+  --color-violet-400: #7aa2ff;
 
-  /* Le papier du plan de voies, pour les planches techniques. */
-  --color-plan-50: #eef0ee;
-  --color-plan-100: #e2e5e3;
-  --color-plan-300: #b9bdbb;
-  --color-plan-600: #5b605d;
-  --color-plan-900: #0a0b0b;
+  /* La planche claire du plan de voies. */
+  --color-plan-50: #f5f6f8;
+  --color-plan-100: #e9ebf0;
+  --color-plan-300: #c4c8d2;
+  --color-plan-600: #5a6072;
+  --color-plan-900: #0d0f14;
 
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
 
-  /* Angles vifs : un panneau de gare n'a pas de coins arrondis. */
-  --radius-xs: 1px;
-  --radius-sm: 2px;
-  --radius: 2px;
-  --radius-md: 2px;
-  --radius-lg: 3px;
-  --radius-xl: 3px;
-  --radius-2xl: 4px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
 }
 
 :root {
@@ -76,6 +77,7 @@ body {
 :focus-visible {
   outline: 2px solid var(--color-signal-500);
   outline-offset: 2px;
+  border-radius: 6px;
 }
 
 h1,
@@ -88,14 +90,19 @@ p {
   text-wrap: pretty;
 }
 
-/* Titre de signalétique : condensé, capitales, serré. */
+/* Titre : grotesque serrée, casse normale. */
 .titre-voie {
   font-family: var(--font-sans);
-  font-stretch: 72%;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  line-height: 0.92;
+  font-weight: 640;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+
+.titre-display {
+  font-family: var(--font-sans);
+  font-weight: 660;
+  letter-spacing: -0.048em;
+  line-height: 0.98;
 }
 
 /* Étiquette technique : petite, espacée, en capitales. */
@@ -103,7 +110,7 @@ p {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -111,24 +118,166 @@ p {
   font-variant-numeric: tabular-nums;
 }
 
-/* Le pavé de voie : un numéro sur fond jaune, comme au-dessus des quais. */
+/* Pastille de voie : le numéro dans une pilule ambrée translucide. */
 .pave-voie {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.75rem;
-  height: 1.75rem;
-  padding: 0 0.35rem;
-  background: var(--color-signal-500);
-  color: var(--color-rail-950);
-  font-family: var(--font-sans);
-  font-stretch: 72%;
-  font-weight: 800;
-  font-size: 15px;
+  min-width: 2.25rem;
+  height: 1.5rem;
+  padding: 0 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-signal-500) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-signal-500) 32%, transparent);
+  color: var(--color-signal-400);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
 }
 
-/* Filet de séparation : un rail, net, sans dégradé. */
+/* Surfaces : bordure à peine visible, reflet en haut, ombre douce. */
+.carte {
+  border-radius: var(--radius-xl);
+  background: var(--color-rail-900);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.07),
+    inset 0 1px 0 rgb(255 255 255 / 0.05);
+}
+
+.panneau {
+  border-radius: var(--radius-3xl);
+  background: var(--color-rail-900);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 30px 80px -30px rgb(0 0 0 / 0.7);
+}
+
+.carte-active {
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    background-color 200ms ease;
+}
+
+.carte-active:hover {
+  transform: translateY(-2px);
+  background: var(--color-rail-850);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.12),
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 24px 50px -24px rgb(0 0 0 / 0.8);
+}
+
+/* Boutons. */
+.bouton-primaire {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: var(--radius-lg);
+  background: var(--color-signal-500);
+  color: var(--color-rail-950);
+  padding: 0.75rem 1.25rem;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    0 8px 24px -10px color-mix(in srgb, var(--color-signal-500) 70%, transparent);
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.bouton-primaire:hover {
+  background: var(--color-signal-400);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.4),
+    0 12px 32px -10px color-mix(in srgb, var(--color-signal-500) 85%, transparent);
+}
+
+.bouton-primaire:active,
+.bouton-secondaire:active {
+  transform: scale(0.98);
+}
+
+.bouton-secondaire {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: var(--radius-lg);
+  padding: 0.75rem 1.25rem;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-rail-100);
+  background: rgb(255 255 255 / 0.03);
+  box-shadow: inset 0 0 0 1px var(--color-rail-700);
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.bouton-secondaire:hover {
+  background: rgb(255 255 255 / 0.06);
+  box-shadow: inset 0 0 0 1px var(--color-rail-500);
+}
+
+/* Badge de statut en pilule teintée. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.badge-vert {
+  background: color-mix(in srgb, var(--color-vert-500) 14%, transparent);
+  color: var(--color-vert-500);
+}
+
+.badge-signal {
+  background: color-mix(in srgb, var(--color-signal-500) 16%, transparent);
+  color: var(--color-signal-400);
+}
+
+.badge-rouge {
+  background: color-mix(in srgb, var(--color-rouge-500) 16%, transparent);
+  color: var(--color-rouge-500);
+}
+
+/* Halo derrière le hero : de la lumière, pas un dégradé criard. */
+.halo {
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, color-mix(in srgb, var(--color-signal-500) 11%, transparent), transparent 60%),
+    radial-gradient(50rem 30rem at 0% 10%, color-mix(in srgb, var(--color-bleu-400) 9%, transparent), transparent 60%);
+}
+
+.texte-signal {
+  background: linear-gradient(100deg, var(--color-signal-500), var(--color-signal-400) 60%, #ffb02e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Grille de fond discrète, comme un plan technique. */
+.grille-fond {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%);
+}
+
+/* Filet de séparation. */
 .rail-line {
   height: 1px;
   background: var(--color-rail-800);
@@ -143,7 +292,7 @@ p {
   );
 }
 
-/* Colonne de code : lisible, sélectionnable, jamais tronquée sans prévenir. */
+/* Bloc de code : lisible, sélectionnable, jamais tronqué sans prévenir. */
 .bloc-code {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
@@ -158,9 +307,10 @@ p {
 
 .bloc-code::-webkit-scrollbar-thumb {
   background: var(--color-rail-700);
+  border-radius: 999px;
 }
 
-/* Affichage d'un tableau des départs : la ligne qui vient d'arriver s'allume. */
+/* Tableau des départs : la ligne qui vient d'arriver s'allume. */
 @keyframes allumage {
   from {
     opacity: 0;

@@ -73,19 +73,27 @@ export function TableauDesDeparts({ stations, trajets, jours, cleDemo }: Props) 
   const offres = resultat && resultat.statut === 200 ? (resultat.corps as Page<Offer>).data : [];
 
   return (
-    <div className="border border-rail-800 bg-rail-900">
+    <div className="panneau overflow-hidden">
       {/* En-tête du panneau */}
-      <div className="flex items-center justify-between border-b border-rail-800 px-4 py-2.5">
-        <p className="etiquette text-rail-400">Tableau des départs · données de l&apos;API</p>
-        <div role="tablist" aria-label="Affichage de la réponse" className="flex">
+      <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
+        <p className="flex items-center gap-2.5 text-[13px] font-medium text-rail-200">
+          <span className="flex gap-1.5" aria-hidden>
+            <span className="h-2.5 w-2.5 rounded-full bg-rouge-500/80" />
+            <span className="h-2.5 w-2.5 rounded-full bg-signal-500/80" />
+            <span className="h-2.5 w-2.5 rounded-full bg-vert-500/80" />
+          </span>
+          Tableau des départs
+          <span className="hidden text-rail-500 sm:inline">· données de l&apos;API</span>
+        </p>
+        <div role="tablist" aria-label="Affichage de la réponse" className="flex rounded-[10px] bg-rail-950/80 p-1 ring-1 ring-inset ring-white/[0.06]">
           {(["tableau", "json"] as const).map((v) => (
             <button
               key={v}
               role="tab"
               aria-selected={vue === v}
               onClick={() => setVue(v)}
-              className={`etiquette cursor-pointer px-2.5 py-1 transition-colors ${
-                vue === v ? "bg-rail-100 text-rail-950" : "text-rail-400 hover:text-rail-100"
+              className={`cursor-pointer rounded-md px-3 py-1 text-[12px] font-medium transition-colors ${
+                vue === v ? "bg-rail-800 text-rail-100 shadow-sm" : "text-rail-400 hover:text-rail-100"
               }`}
             >
               {v === "tableau" ? "Voyageur" : "JSON"}
@@ -95,13 +103,13 @@ export function TableauDesDeparts({ stations, trajets, jours, cleDemo }: Props) 
       </div>
 
       {/* Commandes : trajet et jour */}
-      <div className="grid gap-3 border-b border-rail-800 p-4 sm:grid-cols-[1fr_auto]">
+      <div className="grid gap-4 px-5 pb-4 pt-5 sm:grid-cols-[1fr_auto]">
         <label className="block">
-          <span className="etiquette mb-1.5 block text-rail-600">Trajet</span>
+          <span className="mb-2 block text-[12px] font-medium text-rail-500">Trajet</span>
           <select
             value={trajet}
             onChange={(e) => setTrajet(Number(e.target.value))}
-            className="w-full cursor-pointer border border-rail-700 bg-rail-950 px-3 py-2 text-[14px] text-rail-100 outline-none focus:border-signal-500"
+            className="w-full cursor-pointer rounded-[10px] bg-rail-950 px-3.5 py-2.5 text-[14px] text-rail-100 outline-none ring-1 ring-inset ring-rail-700 transition-shadow focus:ring-2 focus:ring-signal-500"
           >
             {trajets.map((t, i) => (
               <option key={`${t.origin}-${t.destination}`} value={i}>
@@ -111,8 +119,8 @@ export function TableauDesDeparts({ stations, trajets, jours, cleDemo }: Props) 
           </select>
         </label>
         <fieldset>
-          <legend className="etiquette mb-1.5 block text-rail-600">Jour</legend>
-          <div className="flex">
+          <legend className="mb-2 block text-[12px] font-medium text-rail-500">Jour</legend>
+          <div className="flex gap-1 rounded-[12px] bg-rail-950 p-1 ring-1 ring-inset ring-rail-700">
             {jours.slice(0, 4).map((j) => {
               const d = new Date(`${j}T12:00:00`);
               return (
@@ -121,10 +129,10 @@ export function TableauDesDeparts({ stations, trajets, jours, cleDemo }: Props) 
                   type="button"
                   onClick={() => setJour(j)}
                   aria-pressed={jour === j}
-                  className={`chiffres -ml-px cursor-pointer border px-3 py-2 text-[13px] transition-colors first:ml-0 ${
+                  className={`chiffres cursor-pointer rounded-lg px-3 py-1.5 text-[13px] transition-colors ${
                     jour === j
-                      ? "relative z-10 border-signal-500 bg-signal-500 text-rail-950"
-                      : "border-rail-700 text-rail-300 hover:text-rail-100"
+                      ? "bg-signal-500 font-semibold text-rail-950 shadow-[inset_0_1px_0_rgb(255_255_255/0.35)]"
+                      : "text-rail-300 hover:bg-white/[0.05] hover:text-rail-100"
                   }`}
                 >
                   {d.toLocaleDateString("fr-FR", { weekday: "short", day: "2-digit" })}
@@ -136,12 +144,12 @@ export function TableauDesDeparts({ stations, trajets, jours, cleDemo }: Props) 
       </div>
 
       {/* La requête telle qu'elle part */}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-rail-800 bg-rail-950 px-4 py-2.5 font-mono text-[12px]">
-        <span className="text-vert-500">GET</span>
+      <div className="mx-5 flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-xl bg-rail-950 px-3.5 py-2.5 font-mono text-[12px] ring-1 ring-inset ring-white/[0.06]">
+        <span className="badge badge-vert !px-2 !py-0.5 font-semibold">GET</span>
         <span className="min-w-0 basis-full break-all text-rail-300 sm:basis-0 sm:flex-1">{chemin}</span>
         {resultat ? (
           <span className="chiffres flex items-center gap-3 text-rail-400">
-            <span className={resultat.statut === 200 ? "text-vert-500" : "text-signal-500"}>
+            <span className={`badge !py-0.5 ${resultat.statut === 200 ? "badge-vert" : "badge-signal"}`}>
               {resultat.statut || "—"}
             </span>
             <span>{resultat.dureeMs} ms</span>
@@ -151,20 +159,20 @@ export function TableauDesDeparts({ stations, trajets, jours, cleDemo }: Props) 
       </div>
 
       {/* La réponse */}
-      <div className="min-h-[19rem]" aria-live="polite" aria-busy={chargement}>
+      <div className="mt-2 min-h-[19rem] overflow-x-auto" aria-live="polite" aria-busy={chargement}>
         {vue === "json" || (resultat && resultat.statut !== 200) ? (
-          <pre className="bloc-code max-h-[19rem] p-4 text-[12px] text-rail-300">
+          <pre className="bloc-code max-h-[19rem] px-5 py-4 text-[12px] text-rail-300">
             {resultat ? JSON.stringify(resultat.corps, null, 2) : "…"}
           </pre>
         ) : (
           <table className="w-full border-collapse text-left">
             <thead>
-              <tr className="etiquette text-rail-600">
-                <th className="px-4 pb-2 pt-3 font-medium">Départ</th>
+              <tr className="text-[11px] font-medium uppercase tracking-[0.06em] text-rail-500">
+                <th className="px-3 pb-2 pt-3 font-medium sm:px-5">Départ</th>
                 <th className="px-2 pb-2 pt-3 font-medium">Destination</th>
                 <th className="hidden px-2 pb-2 pt-3 font-medium sm:table-cell">Train</th>
                 <th className="px-2 pb-2 pt-3 text-right font-medium">Dès</th>
-                <th className="px-4 pb-2 pt-3 text-right font-medium">Places</th>
+                <th className="px-3 pb-2 pt-3 text-right font-medium sm:px-5">Places</th>
               </tr>
             </thead>
             <tbody>
@@ -174,35 +182,35 @@ export function TableauDesDeparts({ stations, trajets, jours, cleDemo }: Props) 
                 return (
                   <tr
                     key={offre.id}
-                    className="ligne-depart border-t border-rail-800"
+                    className="ligne-depart border-t border-white/[0.05] transition-colors hover:bg-white/[0.02]"
                     style={{ animationDelay: `${i * 45}ms` }}
                   >
-                    <td className="chiffres px-4 py-2.5 font-mono text-[18px] font-semibold text-signal-400">
+                    <td className="chiffres px-3 py-3 font-mono text-[17px] sm:px-5 font-semibold text-signal-400">
                       {heure(offre.departure)}
                     </td>
-                    <td className="px-2 py-2.5">
-                      <p className="titre-voie text-[19px] leading-none text-rail-100">{nom(offre.destination)}</p>
+                    <td className="px-2 py-3">
+                      <p className="text-[15px] font-semibold leading-none tracking-[-0.01em] text-rail-100">{nom(offre.destination)}</p>
                       <p className="mt-1 text-[12px] text-rail-500">
                         arr. {heure(offre.arrival)} · {Math.floor(offre.duration_minutes / 60)} h{" "}
                         {String(offre.duration_minutes % 60).padStart(2, "0")}
                         {offre.segments.length > 1 ? ` · ${offre.segments.length - 1} corresp.` : ""}
                       </p>
                     </td>
-                    <td className="hidden px-2 py-2.5 sm:table-cell">
+                    <td className="hidden px-2 py-3 sm:table-cell">
                       <p className="font-mono text-[12px] text-rail-300">{offre.segments[0].train_number}</p>
                       <p className="text-[12px] text-rail-500">{offre.segments[0].carrier}</p>
                     </td>
-                    <td className="chiffres px-2 py-2.5 text-right font-mono text-[14px] text-rail-100">
+                    <td className="chiffres px-2 py-3 text-right font-mono text-[14px] text-rail-100">
                       {prix.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
                     </td>
-                    <td className="px-4 py-2.5 text-right">
+                    <td className="px-3 py-3 text-right sm:px-5">
                       <span
-                        className={`etiquette inline-block whitespace-nowrap px-1.5 py-0.5 ${
+                        className={`badge ${
                           statut === "available"
-                            ? "text-vert-500"
+                            ? "badge-vert"
                             : statut === "limited"
-                              ? "bg-signal-500 text-rail-950"
-                              : "bg-rouge-500 text-rail-950"
+                              ? "badge-signal"
+                              : "badge-rouge"
                         }`}
                       >
                         {statut === "available"
@@ -228,7 +236,7 @@ export function TableauDesDeparts({ stations, trajets, jours, cleDemo }: Props) 
       </div>
 
       {/* Pied : provoquer une erreur */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-rail-800 px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] bg-rail-950/40 px-5 py-3.5">
         <p className="text-[12px] text-rail-500">
           {enErreur
             ? "Date envoyée au format JJ-MM-AAAA : l'API répond 400 et nomme le champ fautif (RFC 9457)."
@@ -237,7 +245,7 @@ export function TableauDesDeparts({ stations, trajets, jours, cleDemo }: Props) 
         <button
           type="button"
           onClick={() => setEnErreur((e) => !e)}
-          className="etiquette cursor-pointer border border-rail-700 px-2.5 py-1.5 text-rail-300 transition-colors hover:border-signal-500 hover:text-rail-100"
+          className="cursor-pointer rounded-[10px] px-3 py-1.5 text-[12px] font-medium text-rail-200 ring-1 ring-inset ring-rail-700 transition-[box-shadow,color,background-color] hover:bg-rouge-500/10 hover:text-rouge-500 hover:ring-rouge-500/50"
         >
           {enErreur ? "Revenir à une requête valide" : "Provoquer une erreur"}
         </button>

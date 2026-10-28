@@ -44,7 +44,7 @@ export default function DocsPage() {
                   <li key={operation.id}>
                     <a
                       href={`#${operation.id}`}
-                      className="flex items-center gap-2.5 border-l-2 border-transparent py-1.5 pl-2.5 font-mono text-[13px] text-rail-300 transition-colors hover:border-signal-500 hover:text-rail-100"
+                      className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 font-mono text-[13px] text-rail-300 transition-colors hover:bg-white/[0.04] hover:text-rail-100"
                     >
                       <MethodBadge method={operation.method} />
                       <span className="truncate">{operation.path}</span>
@@ -83,15 +83,15 @@ export default function DocsPage() {
               ))}
           </div>
 
-          <div className="grid border border-rail-800 bg-rail-900 sm:grid-cols-[auto_1fr]">
-            <span className="hachures hidden w-3 sm:block" aria-hidden />
-            <div className="p-4">
+          <div className="carte grid overflow-hidden sm:grid-cols-[auto_1fr]">
+            <span className="m-4 mr-0 hidden w-1 rounded-full bg-gradient-to-b from-signal-500 to-signal-500/20 sm:block" aria-hidden />
+            <div className="p-5 sm:pl-2">
             <p className="etiquette mb-2 text-signal-500">Bac à sable public</p>
             <p className="text-[14px] text-rail-300">
               Une clé de bac à sable publique est déjà branchée dans les exemples ci-dessous.
               Aucune inscription : les boutons « Envoyer » appellent l&apos;API en direct.
             </p>
-            <code className="mt-3 inline-block border border-rail-700 bg-rail-950 px-2 py-1 font-mono text-[12px] text-signal-400">{demoSecret()}</code>
+            <code className="mt-3 inline-block max-w-full break-all rounded-lg bg-rail-950 px-2.5 py-1.5 font-mono text-[12px] text-signal-400 ring-1 ring-inset ring-white/[0.08]">{demoSecret()}</code>
             </div>
           </div>
         </header>
@@ -112,7 +112,7 @@ export default function DocsPage() {
               <article
                 key={operation.id}
                 id={operation.id}
-                className="scroll-mt-24 space-y-6 border border-rail-800 bg-rail-900/40 p-5 sm:p-6"
+                className="carte scroll-mt-24 space-y-6 p-5 sm:p-7"
               >
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2.5">
@@ -185,13 +185,13 @@ export default function DocsPage() {
                       <details
                         key={reponse.status}
                         open={reponse.status.startsWith("2")}
-                        className="border border-rail-800 bg-rail-950"
+                        className="overflow-hidden rounded-xl bg-rail-950 ring-1 ring-inset ring-white/[0.07]"
                       >
                         <summary className="flex cursor-pointer items-center gap-2.5 px-3.5 py-2 text-[13px]">
                           <StatusBadge status={reponse.status} />
                           <span className="text-rail-300">{reponse.description}</span>
                         </summary>
-                        <div className="border-t border-rail-800 p-3.5">
+                        <div className="border-t border-white/[0.06] p-3.5">
                           {reponse.schema ? <SchemaView schema={reponse.schema} /> : null}
                           {reponse.example ? (
                             <pre className="bloc-code mt-3 rounded-md border border-rail-800 bg-rail-950 p-3 text-rail-400">
@@ -241,18 +241,14 @@ function valeursDeDepart(): Record<string, string> {
 
 function MethodBadge({ method }: { method: string }) {
   return (
-    <span className="bg-vert-500 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-rail-950">
+    <span className="badge badge-vert font-semibold">
       {method}
     </span>
   );
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const couleur = status.startsWith("2")
-    ? "bg-vert-500 text-rail-950"
-    : status.startsWith("4")
-      ? "bg-signal-500 text-rail-950"
-      : "bg-rouge-500 text-rail-950";
+  const couleur = status.startsWith("2") ? "badge-vert" : status.startsWith("4") ? "badge-signal" : "badge-rouge";
 
-  return <span className={`px-1.5 py-0.5 font-mono text-[11px] font-semibold ${couleur}`}>{status}</span>;
+  return <span className={`badge font-semibold ${couleur}`}>{status}</span>;
 }

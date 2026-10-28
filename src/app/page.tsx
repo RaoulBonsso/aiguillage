@@ -38,78 +38,82 @@ export default function Accueil() {
   return (
     <>
       {/* ── 01 · Le produit ───────────────────────────────────────────── */}
-      <section className="border-b border-rail-800">
-        <div className="mx-auto grid max-w-[84rem] gap-10 px-5 py-12 lg:grid-cols-[minmax(0,11fr)_minmax(0,13fr)] lg:gap-14 lg:py-16">
-          <div className="flex flex-col">
-            <p className="etiquette flex items-center gap-3 text-rail-400">
+      <section className="relative overflow-hidden">
+        <div aria-hidden className="halo pointer-events-none absolute inset-0" />
+        <div aria-hidden className="grille-fond pointer-events-none absolute inset-0" />
+        <div className="relative mx-auto grid max-w-[77.5rem] gap-12 px-5 pb-16 pt-14 lg:grid-cols-[minmax(0,10fr)_minmax(0,13fr)] lg:gap-14 lg:pb-16 lg:pt-20">
+          <div className="flex min-w-0 flex-col">
+            <p className="flex items-center gap-3 text-[13px] text-rail-400">
               <span className="pave-voie">01</span>
               API de distribution ferroviaire
             </p>
-            <h1 className="titre-voie mt-7 text-[clamp(3rem,6vw,5.6rem)] text-rail-100">
-              <span className="block whitespace-nowrap">L&apos;API qui met</span>
-              <span className="block">les trains</span>
-              <span className="block text-signal-500">en vente.</span>
+            <h1 className="titre-display mt-7 text-[clamp(2.75rem,5.4vw,4.75rem)] text-rail-100">
+              L&apos;API qui met les trains <span className="texte-signal">en vente.</span>
             </h1>
-            <p className="mt-7 max-w-[34rem] text-[17px] leading-relaxed text-rail-300">
+            <p className="mt-6 max-w-[34rem] text-[17px] leading-relaxed text-rail-300">
               Un site, une appli ou une agence qui vend des billets a besoin de trois choses : les
-              horaires, les prix, et les places restantes. <strong className="font-semibold text-rail-100">Aiguillage les sert par une API REST</strong>,
-              avec sa documentation et sa console d&apos;accès — construits comme un vrai produit.
+              horaires, les prix et les places restantes.{" "}
+              <strong className="font-semibold text-rail-100">Aiguillage les sert par une API REST</strong>,
+              avec sa documentation et sa console d&apos;accès, construites comme un vrai produit.
             </p>
 
-            <dl className="mt-9 grid grid-cols-3 border-y border-rail-800">
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/docs" className="bouton-primaire group">
+                Lire la documentation
+                <span className="transition-transform group-hover:translate-x-0.5">
+                  <Fleche />
+                </span>
+              </Link>
+              <a href={DEPOT} className="bouton-secondaire">
+                <Github />
+                Voir le code
+              </a>
+            </div>
+
+            <dl className="mt-10 grid grid-cols-3 gap-3">
               <Chiffre valeur={String(nombreOperations)} libelle="opérations" />
               <Chiffre valeur="54" libelle="tests, dont 18 de contrat" />
               <Chiffre valeur={offers.length.toLocaleString("fr-FR")} libelle="départs sur 21 jours" />
             </dl>
-
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link
-                href="/docs"
-                className="group inline-flex items-center gap-3 bg-signal-500 px-5 py-3 text-[14px] font-semibold text-rail-950 transition-[background-color,transform] hover:bg-signal-400 active:scale-[0.98]"
-              >
-                Lire la documentation
-                <Fleche />
-              </Link>
-              <a
-                href={DEPOT}
-                className="inline-flex items-center gap-3 border border-rail-700 px-5 py-3 text-[14px] font-medium text-rail-100 transition-colors hover:border-rail-400"
-              >
-                Voir le code
-              </a>
-            </div>
           </div>
 
-          <div className="lg:pt-2">
+          <div className="min-w-0 lg:pt-1">
             <TableauDesDeparts stations={stations} trajets={trajets} jours={jours} cleDemo={demoSecret()} />
           </div>
         </div>
       </section>
 
       {/* ── 02 · Ce que ça prouve ─────────────────────────────────────── */}
-      <section className="border-b border-rail-800">
-        <div className="mx-auto max-w-[84rem] px-5 py-16">
-          <EnTete numero="02" surtitre="Fiche technique" titre="Ce que le projet prouve" />
-          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-rail-400">
-            Chaque affirmation renvoie à l&apos;endroit du code où on peut la vérifier. Rien n&apos;est
-            décoratif.
-          </p>
+      <section>
+        <div className="mx-auto max-w-[77.5rem] px-5 pb-20 pt-12 lg:pb-24 lg:pt-16">
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <EnTete numero="02" surtitre="Fiche technique" titre="Ce que le projet prouve" />
+            <p className="max-w-md text-[15px] leading-relaxed text-rail-400">
+              Chaque affirmation renvoie à l&apos;endroit du code où on peut la vérifier. Rien n&apos;est
+              décoratif.
+            </p>
+          </div>
 
-          <ol className="mt-10 border-t border-rail-100">
+          <ol className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {preuves.map((preuve, index) => (
-              <li
-                key={preuve.titre}
-                className="group grid gap-x-8 gap-y-2 border-b border-rail-800 py-6 md:grid-cols-[4rem_minmax(0,18rem)_minmax(0,1fr)_minmax(0,14rem)]"
-              >
-                <span className="chiffres font-mono text-[13px] text-rail-600">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <h3 className="titre-voie text-[26px] text-rail-100">{preuve.titre}</h3>
-                <p className="max-w-xl text-[15px] leading-relaxed text-rail-300">{preuve.detail}</p>
+              <li key={preuve.titre} className={index === 0 ? "lg:col-span-2" : undefined}>
                 <a
                   href={`${DEPOT}/blob/main/${preuve.fichier}`}
-                  className="self-start font-mono text-[12px] text-rail-400 underline decoration-rail-700 underline-offset-4 transition-colors hover:text-signal-400 hover:decoration-signal-500 md:justify-self-end md:text-right"
+                  className="carte carte-active group flex h-full flex-col p-6"
                 >
-                  {preuve.fichier}
+                  <span className="flex items-center justify-between">
+                    <span className="chiffres flex h-9 w-9 items-center justify-center rounded-xl bg-white/[0.04] font-mono text-[13px] text-signal-400 ring-1 ring-inset ring-white/[0.08]">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-rail-600 transition-[color,transform] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-signal-400">
+                      <FlecheDiagonale />
+                    </span>
+                  </span>
+                  <h3 className="titre-voie mt-6 text-[21px] text-rail-100">{preuve.titre}</h3>
+                  <p className="mt-2.5 flex-1 text-[15px] leading-relaxed text-rail-400">{preuve.detail}</p>
+                  <span className="mt-6 inline-flex max-w-full self-start truncate rounded-lg bg-rail-950/70 px-2.5 py-1.5 font-mono text-[12px] text-rail-300 ring-1 ring-inset ring-white/[0.06]">
+                    {preuve.fichier}
+                  </span>
                 </a>
               </li>
             ))}
@@ -118,46 +122,47 @@ export default function Accueil() {
       </section>
 
       {/* ── 03 · Le trajet d'une requête (planche claire) ─────────────── */}
-      <section className="bg-plan-50 text-plan-900">
-        <div className="mx-auto max-w-[84rem] px-5 py-16">
-          <div className="flex flex-wrap items-end justify-between gap-6">
-            <div>
-              <p className="etiquette flex items-center gap-3 text-plan-600">
-                <span className="pave-voie">03</span>
-                Architecture
+      <section className="px-3 sm:px-5">
+        <div className="mx-auto max-w-[80rem] rounded-[28px] bg-plan-50 text-plan-900 shadow-[0_40px_100px_-40px_rgb(0_0_0/0.8)]">
+          <div className="mx-auto max-w-[77.5rem] px-5 py-16 sm:px-8 lg:py-20">
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <div>
+                <p className="flex items-center gap-3 text-[13px] text-plan-600">
+                  <span className="pave-voie !bg-plan-900 !text-signal-400 !shadow-none">03</span>
+                  Architecture
+                </p>
+                <h2 className="titre-voie mt-5 text-[clamp(2rem,3.6vw,3rem)]">
+                  Le trajet d&apos;une requête
+                </h2>
+              </div>
+              <p className="max-w-md text-[15px] leading-relaxed text-plan-600">
+                Toutes les garanties vivent dans une seule enveloppe. Aucune route ne les réimplémente,
+                donc aucune ne peut les oublier.
               </p>
-              <h2 className="titre-voie mt-5 text-[clamp(2.2rem,4.6vw,3.8rem)]">
-                Le trajet d&apos;une requête
-              </h2>
             </div>
-            <p className="max-w-md text-[15px] leading-relaxed text-plan-600">
-              Toutes les garanties vivent dans une seule enveloppe. Aucune route ne les réimplémente,
-              donc aucune ne peut les oublier.
-            </p>
+            <PlanDeVoies />
           </div>
-          <PlanDeVoies />
         </div>
       </section>
 
       {/* ── 04 · Les livrables ────────────────────────────────────────── */}
       <section>
-        <div className="mx-auto max-w-[84rem] px-5 py-16">
+        <div className="mx-auto max-w-[77.5rem] px-5 py-20 lg:py-24">
           <EnTete numero="04" surtitre="Les livrables" titre="Trois livrables, un seul contrat" />
-          <ul className="mt-10 grid border-l border-t border-rail-800 md:grid-cols-3">
+          <ul className="mt-12 grid gap-4 md:grid-cols-3">
             {livrables.map((livrable) => (
-              <li key={livrable.titre} className="border-b border-r border-rail-800">
-                <Link
-                  href={livrable.href}
-                  className="group flex h-full flex-col p-6 transition-colors hover:bg-rail-900"
-                >
+              <li key={livrable.titre}>
+                <Link href={livrable.href} className="carte carte-active group flex h-full flex-col p-6">
                   <span className="flex items-center justify-between">
-                    <span className="font-mono text-[12px] text-rail-500">{livrable.chemin}</span>
-                    <span className="text-rail-600 transition-[color,transform] group-hover:translate-x-0.5 group-hover:text-signal-500">
+                    <span className="rounded-full bg-white/[0.04] px-2.5 py-1 font-mono text-[12px] text-rail-300 ring-1 ring-inset ring-white/[0.08]">
+                      {livrable.chemin}
+                    </span>
+                    <span className="text-rail-600 transition-[color,transform] group-hover:translate-x-0.5 group-hover:text-signal-400">
                       <Fleche />
                     </span>
                   </span>
-                  <span className="titre-voie mt-8 text-[34px] text-rail-100">{livrable.titre}</span>
-                  <span className="mt-3 text-[14px] leading-relaxed text-rail-400">{livrable.detail}</span>
+                  <span className="titre-voie mt-10 text-[26px] text-rail-100">{livrable.titre}</span>
+                  <span className="mt-2.5 text-[14px] leading-relaxed text-rail-400">{livrable.detail}</span>
                 </Link>
               </li>
             ))}
@@ -225,21 +230,21 @@ const livrables = [
 function EnTete({ numero, surtitre, titre }: { numero: string; surtitre: string; titre: string }) {
   return (
     <div>
-      <p className="etiquette flex items-center gap-3 text-rail-400">
+      <p className="flex items-center gap-3 text-[13px] text-rail-400">
         <span className="pave-voie">{numero}</span>
         {surtitre}
       </p>
-      <h2 className="titre-voie mt-5 text-[clamp(2.2rem,4.6vw,3.8rem)] text-rail-100">{titre}</h2>
+      <h2 className="titre-voie mt-5 text-[clamp(2rem,3.6vw,3rem)] text-rail-100">{titre}</h2>
     </div>
   );
 }
 
 function Chiffre({ valeur, libelle }: { valeur: string; libelle: string }) {
   return (
-    <div className="border-r border-rail-800 py-4 pr-3 last:border-r-0 [&:not(:first-child)]:pl-4">
+    <div className="carte px-4 py-4">
       <dt className="sr-only">{libelle}</dt>
-      <dd className="chiffres titre-voie text-[40px] text-rail-100">{valeur}</dd>
-      <dd className="mt-1 text-[12px] leading-snug text-rail-500">{libelle}</dd>
+      <dd className="chiffres titre-voie text-[30px] leading-none text-rail-100">{valeur}</dd>
+      <dd className="mt-2 text-[12px] leading-snug text-rail-500">{libelle}</dd>
     </div>
   );
 }
@@ -247,7 +252,23 @@ function Chiffre({ valeur, libelle }: { valeur: string; libelle: string }) {
 function Fleche() {
   return (
     <svg viewBox="0 0 16 16" className="h-4 w-4" aria-hidden>
-      <path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function FlecheDiagonale() {
+  return (
+    <svg viewBox="0 0 16 16" className="h-4 w-4" aria-hidden>
+      <path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function Github() {
+  return (
+    <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor" aria-hidden>
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
     </svg>
   );
 }
